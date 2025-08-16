@@ -51,13 +51,29 @@ def main() -> None:
             )
         )
         logging.info("Filtered down to %s episodes", len(filteredEpisodes))
+        print(f"\nEpisodes for channel '{channel}':")
+        for idx, episode in enumerate(filteredEpisodes):
+            print(f"{idx + 1}: {episode.slug} - {getattr(episode, 'title', '')}")
+        selected = input("Enter comma-separated episode numbers to download (or leave blank for none): ")
+        if not selected.strip():
+            print("No episodes selected for download.")
+            continue
+        try:
+            selected_indices = [int(x.strip()) - 1 for x in selected.split(",") if x.strip()]
+        except ValueError:
+            print("Invalid input. Skipping channel.")
+            continue
         channelDirectory = create_channel_subdirectory_and_store_metadata_information(
             channelSlug=channel,
             channelData=channelData.details,
             episodesData=channelData.episodes,
             outputDirectory=CONFIG.Downloader.DOWNLOAD_PATH,
         )
-        for episode in filteredEpisodes:
+        for idx in selected_indices:
+            if idx < 0 or idx >= len(filteredEpisodes):
+                print(f"Skipping invalid episode number: {idx + 1}")
+                continue
+            episode = filteredEpisodes[idx]
             logging.info(
                 "Downloading episode `%s` from channel `%s`",
                 episode.slug,

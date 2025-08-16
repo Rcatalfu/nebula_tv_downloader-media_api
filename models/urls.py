@@ -1,4 +1,4 @@
-from pydantic import HttpUrl, parse_obj_as
+from pydantic.v1 import HttpUrl, parse_obj_as
 
 
 NEBULA_API_CONTENT_ALL_VIDEOS = parse_obj_as(

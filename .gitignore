@@ -1,0 +1,26 @@
+# Ignore config file
+config/config.ini
+config/__pycache__/Config.cpython-313.pyc
+models/__pycache__/configuration.cpython-313.pyc
+models/__pycache__/urls.cpython-313.pyc
+models/nebula/__pycache__/Channel.cpython-313.pyc
+models/nebula/__pycache__/Episode.cpython-313.pyc
+models/nebula/__pycache__/Fetched.cpython-313.pyc
+models/nebula/__pycache__/Streaming.cpython-313.pyc
+models/nebula/__pycache__/UserAuthorization.cpython-313.pyc
+models/nebula/__pycache__/VideoAttributes.cpython-313.pyc
+NebulaAPI/__pycache__/Authorization.cpython-313.pyc
+NebulaAPI/__pycache__/ChannelVideos.cpython-313.pyc
+NebulaAPI/__pycache__/StreamingInformation.cpython-313.pyc
+NebulaAPI/__pycache__/VideoFeedFetcher.cpython-313.pyc
+output/jetlag/jetlag/channel.json
+output/jetlag/jetlag/episodes.json
+output/jetlag/jetlag/jetlag-s14e6/jetlag-s14e6.f15919.mp4
+output/jetlag/jetlag/jetlag-s14e6/jetlag-s14e6.mp4
+output/jetlag/jetlag/jetlag-s14e6/thumbnail.jpg
+output/jetlag/jetlag/jetlag-season-14-outtakes/en-main_98ccac34085c.vtt
+output/jetlag/jetlag/jetlag-season-14-outtakes/jetlag-season-14-outtakes.mp4
+output/jetlag/jetlag/jetlag-season-14-outtakes/thumbnail.jpg
+utils/__pycache__/Downloader.cpython-313.pyc
+utils/__pycache__/Filtering.cpython-313.pyc
+utils/__pycache__/MetadataFilesManager.cpython-313.pyc

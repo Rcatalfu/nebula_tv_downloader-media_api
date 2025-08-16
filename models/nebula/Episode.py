@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl, NonNegativeInt
+from pydantic.v1 import BaseModel, HttpUrl, NonNegativeInt
 from models.nebula.VideoAttributes import VideoNebulaAttributes
 
 
