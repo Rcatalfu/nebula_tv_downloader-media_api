@@ -24,3 +24,5 @@ output/jetlag/jetlag/jetlag-season-14-outtakes/thumbnail.jpg
 utils/__pycache__/Downloader.cpython-313.pyc
 utils/__pycache__/Filtering.cpython-313.pyc
 utils/__pycache__/MetadataFilesManager.cpython-313.pyc
+config/config_crimespree.ini
+config/config_jetlag.ini
