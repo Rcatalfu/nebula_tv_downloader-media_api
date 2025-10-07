@@ -44,6 +44,9 @@ def main() -> None:
             len(channelData.episodes.results),
             channel,
         )
+        print(f"\nALL episodes for channel '{channel}':")
+        for idx, episode in enumerate(channelData.episodes.results):
+            print(f"{idx + 1}: {episode.slug} - {getattr(episode, 'title', '')}")
         filteredEpisodes = list(
             filter_out_episodes(
                 filterSettings=CONFIG.NebulaFilters,
@@ -51,31 +54,80 @@ def main() -> None:
             )
         )
         logging.info("Filtered down to %s episodes", len(filteredEpisodes))
-        print(f"\nEpisodes for channel '{channel}':")
+        print(f"\nFiltered episodes for channel '{channel}':")
         for idx, episode in enumerate(filteredEpisodes):
             print(f"{idx + 1}: {episode.slug} - {getattr(episode, 'title', '')}")
-        selected = input("Enter comma-separated episode numbers to download (or leave blank for none): ")
-        if not selected.strip():
+
+        # List excluded episodes (not in filteredEpisodes)
+        excludedEpisodes = [ep for ep in channelData.episodes.results if ep not in filteredEpisodes]
+        print(f"\nExcluded episodes for channel '{channel}':")
+        for idx, episode in enumerate(excludedEpisodes):
+            print(f"{idx + 1}: {episode.slug} - {getattr(episode, 'title', '')}")
+
+        selected_excluded = input("Enter comma-separated EXCLUDED episode numbers to download (or leave blank for none): ")
+        selected_included = input("Enter comma-separated INCLUDED (filtered) episode numbers to download (or leave blank for none): ")
+
+        selected_excluded_indices = []
+        selected_included_indices = []
+        if selected_excluded.strip():
+            try:
+                selected_excluded_indices = [int(x.strip()) - 1 for x in selected_excluded.split(",") if x.strip()]
+            except ValueError:
+                print("Invalid input for excluded episodes. Skipping excluded selection.")
+        if selected_included.strip():
+            try:
+                selected_included_indices = [int(x.strip()) - 1 for x in selected_included.split(",") if x.strip()]
+            except ValueError:
+                print("Invalid input for included episodes. Skipping included selection.")
+
+        if not selected_excluded_indices and not selected_included_indices:
             print("No episodes selected for download.")
             continue
-        try:
-            selected_indices = [int(x.strip()) - 1 for x in selected.split(",") if x.strip()]
-        except ValueError:
-            print("Invalid input. Skipping channel.")
-            continue
+
         channelDirectory = create_channel_subdirectory_and_store_metadata_information(
             channelSlug=channel,
             channelData=channelData.details,
             episodesData=channelData.episodes,
             outputDirectory=CONFIG.Downloader.DOWNLOAD_PATH,
         )
-        for idx in selected_indices:
+
+        # Download excluded episodes
+        for idx in selected_excluded_indices:
+            if idx < 0 or idx >= len(excludedEpisodes):
+                print(f"Skipping invalid excluded episode number: {idx + 1}")
+                continue
+            episode = excludedEpisodes[idx]
+            logging.info(
+                "Downloading EXCLUDED episode `%s` from channel `%s`",
+                episode.slug,
+                channel,
+            )
+            episodeDirectory = channelDirectory / episode.slug
+            episodeDirectory.mkdir(parents=True, exist_ok=True)
+            download_thumbnail(
+                episode.images.thumbnail.src, episodeDirectory / "thumbnail.jpg"
+            )
+            streamingInformation = get_streaming_information_by_episode(
+                videoSlug=episode.slug,
+                authorizationHeader=NEBULA_AUTH.get_authorization_header(full=True),
+            )
+            download_video(
+                url=streamingInformation.manifest,
+                outputFile=episodeDirectory / f"{episode.slug}",
+            )
+            download_subtitles(
+                subtitiles=streamingInformation.subtitles,
+                outputDirectory=episodeDirectory,
+            )
+
+        # Download included (filtered) episodes
+        for idx in selected_included_indices:
             if idx < 0 or idx >= len(filteredEpisodes):
-                print(f"Skipping invalid episode number: {idx + 1}")
+                print(f"Skipping invalid included episode number: {idx + 1}")
                 continue
             episode = filteredEpisodes[idx]
             logging.info(
-                "Downloading episode `%s` from channel `%s`",
+                "Downloading INCLUDED (filtered) episode `%s` from channel `%s`",
                 episode.slug,
                 channel,
             )
