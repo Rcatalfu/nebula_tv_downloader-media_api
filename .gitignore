@@ -26,3 +26,4 @@ utils/__pycache__/Filtering.cpython-313.pyc
 utils/__pycache__/MetadataFilesManager.cpython-313.pyc
 config/config_crimespree.ini
 config/config_jetlag.ini
+config/config_scav.ini
